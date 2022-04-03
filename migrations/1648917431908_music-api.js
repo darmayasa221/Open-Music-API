@@ -1,7 +1,3 @@
-/* eslint-disable camelcase */
-
-// exports.shorthands = undefined;
-
 exports.up = (pgm) => {
   pgm.createTable('album', {
     id: {
@@ -17,7 +13,7 @@ exports.up = (pgm) => {
       notNull: true,
     },
   });
-  pgm.createTable('songs', {
+  pgm.createTable('song', {
     id: {
       type: 'VARCHAR(20)',
       primaryKey: true,
@@ -34,6 +30,10 @@ exports.up = (pgm) => {
       type: 'TEXT',
       notNull: true,
     },
+    performer: {
+      type: 'TEXT',
+      notNull: true,
+    },
     duration: {
       type: 'INT',
       notNull: false,
@@ -47,5 +47,5 @@ exports.up = (pgm) => {
 
 exports.down = (pgm) => {
   pgm.dropTable('album');
-  pgm.dropTable('songs');
+  pgm.dropTable('song');
 };
