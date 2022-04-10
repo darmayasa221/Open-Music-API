@@ -1,3 +1,6 @@
+/* eslint-disable max-len */
+/* eslint-disable camelcase */
+/* eslint-disable consistent-return */
 const { nanoid } = require('nanoid');
 
 const generateId = (item) => {
@@ -12,7 +15,31 @@ const remakeSongsStructure = ({ id, title, performer }) => ({
   performer,
 });
 
+const playlists = ({ id, name, username }) => ({
+  id,
+  name,
+  username,
+});
+
+const songs = ({ song_id, title, performer }) => ({
+  id: song_id,
+  title,
+  performer,
+});
+const uniqueValuePlaylistName = (firstValue, index, self) => self.findIndex((secondValue) => (secondValue.name === firstValue.name)) === index;
+const uniqueValueSongTitle = (firstValue, index, self) => self.findIndex((secondValue) => (secondValue.title === firstValue.title)) === index;
+const playlistSongsStructure = (playlistsSongs) => {
+  const playlist = playlistsSongs.map(playlists);
+  const song = playlistsSongs.map(songs).filter(uniqueValueSongTitle);
+  return {
+    ...playlist[0],
+    songs: song,
+  };
+};
+
 module.exports = {
   generateId,
   remakeSongsStructure,
+  uniqueValuePlaylistName,
+  playlistSongsStructure,
 };

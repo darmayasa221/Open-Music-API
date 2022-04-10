@@ -1,11 +1,11 @@
-const UsersHandler = require('../users/handler');
+const PlaylistsHandler = require('./handler');
 const routes = require('./routes');
 
 module.exports = {
-  name: 'users',
-  versions: '1.0.0',
+  name: 'palylists',
+  version: '1.0.0',
   register: async (server, { service, validator }) => {
-    const usersHandler = new UsersHandler(service, validator);
-    server.route(routes(usersHandler));
+    const palylistHandler = new PlaylistsHandler(service, validator);
+    server.route(routes(palylistHandler));
   },
 };

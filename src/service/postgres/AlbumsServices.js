@@ -38,7 +38,7 @@ class AlbumsServices {
 
   async editAlbumById(id, { name, year }) {
     const query = {
-      text: 'UPDATE album SET name = $1, year = $2 WHERE id = $3 RETURNING $3 as id',
+      text: 'UPDATE album SET name = $1, year = $2 WHERE id = $3 RETURNING id',
       values: [name, year, id],
     };
 
@@ -51,7 +51,7 @@ class AlbumsServices {
 
   async deleteAlbumById(id) {
     const query = {
-      text: 'DELETE FROM album WHERE id = $1 RETURNING $1 as id',
+      text: 'DELETE FROM album WHERE id = $1 RETURNING id',
       values: [id],
     };
     const result = await this._pool.query(query);

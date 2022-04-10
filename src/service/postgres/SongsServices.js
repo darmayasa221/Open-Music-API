@@ -68,6 +68,17 @@ class SongsServices {
       throw new NotFoundError('Gagal menghapus album, id tidak ditemukan');
     }
   }
+
+  async verifySong(id) {
+    const query = {
+      text: 'SELECT * FROM song WHERE id = $1',
+      values: [id],
+    };
+    const result = await this._pool.query(query);
+    if (result.rowCount < 1) {
+      throw new NotFoundError('song tidak ditemukan');
+    }
+  }
 }
 
 module.exports = SongsServices;
