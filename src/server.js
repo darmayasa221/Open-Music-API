@@ -1,5 +1,6 @@
 require('dotenv').config();
-
+const Inert = require('@hapi/inert');
+const path = require('path');
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
 const albums = require('./api/albums');
@@ -21,14 +22,26 @@ const PlaylistsValidator = require('./validator/playlists');
 const PlaylistSongsValidator = require('./validator/playlistSongs');
 const SongValidator = require('./validator/songs');
 const UsersValidator = require('./validator/users');
+const _exports = require('./api/exports');
+const ProducerService = require('./service/rabbitmq/ProducerService');
+const ExportsValidator = require('./validator/exports');
+const StorageService = require('./service/storage/StorageService');
+const albumsCover = require('./api/albumsCover');
+const AlbumsCoverValidator = require('./validator/albumsCover');
+const userAlbumLikes = require('./api/userAlbumLikes');
+const UserAlbumLikeServices = require('./service/postgres/UserAlbumLikeServices');
+const CacheService = require('./service/redis/CacheService');
 
 const init = async () => {
+  const cacheService = new CacheService();
   const albumsService = new AlbumsServices();
   const songsService = new SongsServices();
   const usersService = new UsersServices();
   const authenticationsService = new AuthenticationsServices();
   const playlistService = new PlaylistsServices();
   const playlistSongsService = new PlaylistSongsService();
+  const userAlbumLikeServices = new UserAlbumLikeServices(cacheService);
+  const storageService = new StorageService(path.resolve(__dirname, 'api/albumsCover/file/images'));
   const server = Hapi.server({
     host: process.env.HOST,
     port: process.env.PORT,
@@ -42,6 +55,9 @@ const init = async () => {
   await server.register([
     {
       plugin: Jwt,
+    },
+    {
+      plugin: Inert,
     },
   ]);
 
@@ -66,6 +82,12 @@ const init = async () => {
       options: {
         service: albumsService,
         validator: AlbumValidator,
+      },
+    },
+    {
+      plugin: userAlbumLikes,
+      options: {
+        service: userAlbumLikeServices,
       },
     },
     {
@@ -106,6 +128,22 @@ const init = async () => {
         usersService,
         tokenManager: TokenManager,
         validator: AuthenticationsValidator,
+      },
+    },
+    {
+      plugin: _exports,
+      options: {
+        service: ProducerService,
+        validator: ExportsValidator,
+        playlistService,
+      },
+    },
+    {
+      plugin: albumsCover,
+      options: {
+        service: storageService,
+        albumsService,
+        validator: AlbumsCoverValidator,
       },
     },
   ]);

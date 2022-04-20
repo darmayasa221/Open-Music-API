@@ -15,6 +15,12 @@ const remakeSongsStructure = ({ id, title, performer }) => ({
   performer,
 });
 
+const remakeAlbumStructure = ({ id, name, year, cover }) => ({
+  id,
+  name,
+  year,
+  coverUrl: cover,
+});
 const playlists = ({ id, name, username }) => ({
   id,
   name,
@@ -42,4 +48,5 @@ module.exports = {
   remakeSongsStructure,
   uniqueValuePlaylistName,
   playlistSongsStructure,
+  remakeAlbumStructure,
 };

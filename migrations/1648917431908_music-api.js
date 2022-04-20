@@ -12,6 +12,10 @@ exports.up = (pgm) => {
       type: 'INT',
       notNull: true,
     },
+    cover: {
+      type: 'TEXT',
+      notNull: false,
+    },
   });
   pgm.createTable('song', {
     id: {
